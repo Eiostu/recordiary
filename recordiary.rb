@@ -7,8 +7,11 @@ class Recordiary < Thor
   end
 
 	desc "record TEXT", "to record the text"
+		
+	DIR 			= ENV['RECORDIARY_DIR'] || Dir.pwd
 	FILE_NAME = Date.today.strftime("%Y%m%d.md").freeze
-	NO_WORK = "don't work".freeze
+	PATH      = DIR + '/' + FILE_NAME
+	NO_WORK 	= "don't work".freeze
 	def record(text=NO_WORK)
 		#textが与えられたら、今日のファイルに追記して、標準出力にファイルの中身を表示する
 		if text != NO_WORK
@@ -17,7 +20,7 @@ class Recordiary < Thor
 			return
 		end
 		#textが与えられず、ファイルがある場合には中身を表示して、ファイルがない場合にはコメントを表示する
-		if File.exist?(FILE_NAME)
+		if File.exist?(PATH)
 			show
 		else
 			comment
@@ -25,13 +28,13 @@ class Recordiary < Thor
 	end
 	
 	private 
-		def write_add(file_name: FILE_NAME, text:)
+		def write_add(file_name: PATH, text:)
 			File.open(file_name, "a") do |file|
 				file.puts "- #{text}"
 			end
 		end
 
-		def show(file_name: FILE_NAME)
+		def show(file_name: PATH)
 			File.open(file_name, "r") do |file|
 				file.each_line{|line| puts line}
 			end
